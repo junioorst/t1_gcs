@@ -3,17 +3,14 @@ import java.util.Scanner;
 
 public class App {
     private Scanner entrada;
-    private listaUsuarios listaUsuarios;
+    private Empresa empresa;
 
     public App() {
         entrada = new Scanner(System.in);
-        listaUsuarios = new listaUsuarios();
-
-        Usuario u;
-        u = new Funcionario(1, "Júnior Stahl", 1, new DFinanceiro());
-        listaUsuarios.adicionarUsuario(u);
-        u = new Admin(1, "Maria Melloni", 2);
-        listaUsuarios.adicionarUsuario(u);
+        this.empresa = new Empresa();
+        empresa.cadastrarUsuario(new Usuario(1, "Júnior", 2));
+        empresa.cadastrarUsuario(new Usuario(1, "Maria", 1));
+        empresa.cadastrarUsuario(new Usuario(1, "João", 1));
     }
 
     public void executar() {
@@ -25,12 +22,12 @@ public class App {
         do {
             System.out.println("Digite o usuário que gostaria de logar:");
             opcaoFuncionario = entrada.nextInt();
-            if (opcaoFuncionario > listaUsuarios.getUsuarios().size() - 1 || opcaoFuncionario < 0) {
+            if (opcaoFuncionario > empresa.getFuncionarios().size() - 1 || opcaoFuncionario < 0) {
                 System.out.println("Usuário inválido. Redigite.");
             }
-        } while (opcaoFuncionario > listaUsuarios.getUsuarios().size() - 1 || opcaoFuncionario < 0);
+        } while (opcaoFuncionario > empresa.getFuncionarios().size() - 1 || opcaoFuncionario < 0);
 
-        Usuario usuario = listaUsuarios.getUsuario(opcaoFuncionario);
+        Usuario usuario = empresa.getFuncionario(opcaoFuncionario);
         if (usuario.getTipo() == 2) {
             do {
                 menuAdmin();
@@ -61,7 +58,7 @@ public class App {
     }
 
     public void listaUsuarios() {
-        ArrayList<Usuario> usuarios = listaUsuarios.getUsuarios();
+        ArrayList<Usuario> usuarios = empresa.getFuncionarios();
         System.out.println("\nUSUÁRIOS CADASTRADOS:");
         for (int i = 0; i < usuarios.size(); i++) {
             System.out.println("[" + i + "]: " + usuarios.get(i).getNome());

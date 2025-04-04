@@ -1,7 +1,8 @@
-public abstract class Usuario {
+public class Usuario {
     private int id;
     private String nome;
-    private int tipo; // 1) funcionário; 2) admin
+    private int tipo;
+    private Departamento departamento;
 
     public Usuario(int id, String nome, int tipo) {
         this.id = id;
@@ -29,7 +30,4 @@ public abstract class Usuario {
         return tipo;
     }
 
-    public void setTipo(int tipo) {
-        this.tipo = tipo;
-    }
 }
