@@ -4,10 +4,11 @@ public class Usuario {
     private int tipo;
     private Departamento departamento;
 
-    public Usuario(int id, String nome, int tipo) {
+    public Usuario(int id, String nome, int tipo, Departamento departamento) {
         this.id = id;
         this.nome = nome;
         this.tipo = tipo;
+        this.departamento = departamento;
     }
 
     public int getId() {
@@ -28,6 +29,10 @@ public class Usuario {
 
     public int getTipo() {
         return tipo;
+    }
+
+    public Departamento getDepartamento() {
+        return departamento;
     }
 
 }

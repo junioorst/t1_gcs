@@ -7,61 +7,112 @@ public class App {
 
     public App() {
         entrada = new Scanner(System.in);
-        this.empresa = new Empresa();
-        empresa.cadastrarUsuario(new Usuario(1, "Júnior", 2));
-        empresa.cadastrarUsuario(new Usuario(1, "Maria", 1));
-        empresa.cadastrarUsuario(new Usuario(1, "João", 1));
+        empresa = new Empresa();
+    }
+
+    public void inicializar() {
+        Departamento financeiro = new Departamento(1, "Financeiro", empresa, 3500);
+        empresa.cadastrarDepartamento(financeiro);
+        empresa.cadastrarUsuario(new Usuario(1, "João da Silva", 1, financeiro));
+        empresa.cadastrarUsuario(new Usuario(2, "Maria Oliveira", 1, financeiro));
+        empresa.cadastrarUsuario(new Usuario(3, "Carlos Pereira", 1, financeiro));
+
+        Departamento marketing = new Departamento(2, "Marketing", empresa, 1700);
+        empresa.cadastrarDepartamento(marketing);
+        empresa.cadastrarUsuario(new Usuario(4, "Ana Souza", 1, marketing));
+        empresa.cadastrarUsuario(new Usuario(5, "Bruno Costa", 1, marketing));
+
+        Departamento comercial = new Departamento(3, "Comercial", empresa, 6500);
+        empresa.cadastrarDepartamento(comercial);
+        empresa.cadastrarUsuario(new Usuario(6, "Fernanda Lima", 1, comercial));
+        empresa.cadastrarUsuario(new Usuario(7, "Diego Martins", 1, comercial));
+        empresa.cadastrarUsuario(new Usuario(8, "Camila Rocha", 1, comercial));
+
+        Departamento informatica = new Departamento(4, "Informática", empresa, 11000);
+        empresa.cadastrarDepartamento(informatica);
+        empresa.cadastrarUsuario(new Usuario(12, "Juliana Ribeiro", 1, informatica));
+        empresa.cadastrarUsuario(new Usuario(13, "Eduardo Cardoso", 1, informatica));
+
+        Departamento recursoshumanos = new Departamento(5, "Recursos Humanos", empresa, 2000);
+        empresa.cadastrarDepartamento(recursoshumanos);
+        empresa.cadastrarUsuario(new Usuario(9, "Lucas Fernandes", 1, recursoshumanos));
+        empresa.cadastrarUsuario(new Usuario(10, "Patrícia Gomes", 1, recursoshumanos));
+        empresa.cadastrarUsuario(new Usuario(11, "Ricardo Almeida", 1, recursoshumanos));
+
+        Departamento administrativo = new Departamento(6, "Administrativo", empresa, 5000);
+        empresa.cadastrarDepartamento(administrativo);
+        empresa.cadastrarUsuario(new Usuario(14, "Tatiane Moreira", 2, administrativo));
+        empresa.cadastrarUsuario(new Usuario(15, "Marcelo Nunes", 2, administrativo));
     }
 
     public void executar() {
-        System.out.println("Bem-vindo a TechSolutions Ltda");
+        inicializar();
+        System.out.println("Bem-vindo a TechSolutions Ltda!");
+
         int opcao = 0;
-
-        listaUsuarios();
-        int opcaoFuncionario;
         do {
-            System.out.println("Digite o usuário que gostaria de logar:");
-            opcaoFuncionario = entrada.nextInt();
-            if (opcaoFuncionario > empresa.getFuncionarios().size() - 1 || opcaoFuncionario < 0) {
-                System.out.println("Usuário inválido. Redigite.");
-            }
-        } while (opcaoFuncionario > empresa.getFuncionarios().size() - 1 || opcaoFuncionario < 0);
+            listaUsuarios();
+            int opcaoFuncionario;
 
-        Usuario usuario = empresa.getFuncionario(opcaoFuncionario);
-        if (usuario.getTipo() == 2) {
             do {
-                menuAdmin();
-                System.out.print("Digite a opção desejada: ");
-                opcao = entrada.nextInt();
-                switch (opcao) {
-                    case 14:
-                        break;
-                    default:
-                        System.out.println("Opcão inválida. Redigite.");
+                System.out.println("Digite o número do usuário que gostaria de logar: ");
+                opcaoFuncionario = entrada.nextInt();
+                if (opcaoFuncionario > empresa.getFuncionarios().size() - 1 || opcaoFuncionario < 0) {
+                    System.out.println("Usuário inválido. Redigite.");
                 }
-            }
-            while (opcao != 14);
-        } else if (usuario.getTipo() == 1) {
-            do {
-                menuFuncionario();
-                System.out.print("Digite a opção desejada: ");
-                opcao = entrada.nextInt();
-                switch (opcao) {
-                    case 5:
-                        break;
-                    default:
-                        System.out.println("Opcão inválida. Redigite.");
+            } while (opcaoFuncionario > empresa.getFuncionarios().size() - 1 || opcaoFuncionario < 0);
+
+            Usuario usuario = empresa.getFuncionario(opcaoFuncionario);
+            if (usuario.getTipo() == 2) {
+                String senhaAdmin = "teste";
+                System.out.println("Olá, " + usuario.getNome() + "!");
+                System.out.println("Insira a senha do administrador para prosseguir: ");
+                entrada.nextLine();
+                String senha = entrada.nextLine();
+                if (senhaAdmin.equals(senha)) {
+                    do {
+                        menuAdmin();
+                        System.out.print("Digite a opção desejada: ");
+                        opcao = entrada.nextInt();
+                        switch (opcao) {
+                            case 13:
+                                break;
+                            case 14:
+                                break;
+                            default:
+                                System.out.println("Opcão inválida. Redigite.");
+                        }
+                    }
+                    while (opcao != 14 && opcao != 13);
+
+                } else {
+                    System.out.println("Senha incorreta. Redigite.");
                 }
+            } else if (usuario.getTipo() == 1) {
+                System.out.println("Olá, " + usuario.getNome() + "!");
+                do {
+                    menuFuncionario();
+                    System.out.print("Digite a opção desejada: ");
+                    opcao = entrada.nextInt();
+                    switch (opcao) {
+                        case 4:
+                            break;
+                        case 5:
+                            break;
+                        default:
+                            System.out.println("Opcão inválida. Redigite.");
+                    }
+                }
+                while (opcao != 5 && opcao != 4);
             }
-            while (opcao != 5);
-        }
+        } while (opcao == 13 || opcao == 4);
     }
 
     public void listaUsuarios() {
         ArrayList<Usuario> usuarios = empresa.getFuncionarios();
-        System.out.println("\nUSUÁRIOS CADASTRADOS:");
+        System.out.println("\n==== USUÁRIOS CADASTRADOS ====");
         for (int i = 0; i < usuarios.size(); i++) {
-            System.out.println("[" + i + "]: " + usuarios.get(i).getNome());
+            System.out.println("[" + i + "]: " + usuarios.get(i).getNome() + " | " + usuarios.get(i).getDepartamento().getNome());
         }
         System.out.println();
     }

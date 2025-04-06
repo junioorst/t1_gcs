@@ -1,21 +1,26 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Departamento {
-    String name;
-    ArrayList<Usuario> funcionarios = new ArrayList<>();
+    int id;
+    String nome;
+    double valorMaximo;
     Empresa empresa;
 
-    public Departamento(String name) {
-        this.name = name;
+    public Departamento(int id, String name, Empresa empresa, double valorMaximo) {
+        this.id = id;
+        this.nome = name;
+        this.empresa = empresa;
+        this.valorMaximo = valorMaximo;
     }
 
-    public List<Usuario> getFuncionarios() {
-        return funcionarios;
+    public int getId() {
+        return id;
     }
 
-    public String getName() {
-        return name;
+    public double getValorMaximo() {
+        return valorMaximo;
+    }
+
+    public String getNome() {
+        return nome;
     }
 
 }

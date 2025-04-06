@@ -7,7 +7,7 @@ public class Empresa {
     private ArrayList<Pedido> todosPedidos = new ArrayList<>();
 
     public Empresa() {
-        this.name = name;
+        this.name = "TechSolutions Ltda";
     }
 
     public ArrayList<Usuario> getFuncionarios() {
@@ -16,6 +16,10 @@ public class Empresa {
 
     public void cadastrarUsuario(Usuario usuario) {
         todosFuncionarios.add(usuario);
+    }
+
+    public void cadastrarDepartamento (Departamento depto) {
+        departamentos.add(depto);
     }
 
     public Usuario getFuncionario(int opcao) {
