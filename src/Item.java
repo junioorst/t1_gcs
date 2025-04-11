@@ -15,4 +15,11 @@ public class Item {
         return preco;
     }
 
+    @Override
+    public String toString() {
+        return "Item{" +
+                "nome='" + nome + '\'' +
+                ", preco=" + preco +
+                '}';
+    }
 }

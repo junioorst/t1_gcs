@@ -2,13 +2,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Pedido {
-    ArrayList<Item> itens;
 
     enum Status {
         EM_ANALISE, APROVADO, REJEITADO
     }
 
     private Status status;
+    private static int LAST_ID = 1000;
     private int id;
     private ArrayList<Item> listaItens;
     private LocalDate data;
@@ -17,8 +17,9 @@ public class Pedido {
     private Usuario func;
     private String descricao;
 
-    public Pedido(Departamento depto, Usuario func, ArrayList<Item> itens, String descricao) {
-        this.itens = itens;
+    public Pedido(Departamento depto, Usuario func, ArrayList<Item> listaItens, String descricao) {
+        this.listaItens = listaItens;
+        this.id = ++LAST_ID;
         this.data = LocalDate.now();
         this.valor = getPrecoTotal();
         this.depto = depto;
@@ -29,9 +30,23 @@ public class Pedido {
 
     private double getPrecoTotal() {
         double total = 0;
-        for (Item item : itens) {
+        for (Item item : listaItens) {
             total += item.getPreco();
         }
         return total;
+    }
+
+    @Override
+    public String toString() {
+        return "Pedido{" +
+                "status=" + status +
+                ", id=" + id +
+                ", listaItens=" + listaItens +
+                ", data=" + data +
+                ", valor=" + valor +
+                ", depto=" + depto +
+                ", func=" + func +
+                ", descricao='" + descricao + '\'' +
+                '}';
     }
 }

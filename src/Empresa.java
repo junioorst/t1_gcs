@@ -22,6 +22,10 @@ public class Empresa {
         departamentos.add(depto);
     }
 
+    public void cadastrarPedido (Pedido pedido) {
+        todosPedidos.add(pedido);
+    }
+
     public Usuario getFuncionario(int opcao) {
         for (int i = 0; i < todosFuncionarios.size(); i++) {
             if (i == opcao) {
@@ -31,4 +35,7 @@ public class Empresa {
         return null;
     }
 
+    public ArrayList<Pedido> getTodosPedidos() {
+        return todosPedidos;
+    }
 }

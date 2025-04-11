@@ -23,4 +23,9 @@ public class Departamento {
         return nome;
     }
 
+    @Override
+    public String toString() {
+        return "Departamento: " +
+                nome + '\'';
+    }
 }

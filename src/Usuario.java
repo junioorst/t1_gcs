@@ -35,4 +35,9 @@ public class Usuario {
         return departamento;
     }
 
+    @Override
+    public String toString() {
+        return "Usuario: " +
+                nome;
+    }
 }

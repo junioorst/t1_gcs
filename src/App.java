@@ -75,6 +75,9 @@ public class App {
                         System.out.print("Digite a opção desejada: ");
                         opcao = entrada.nextInt();
                         switch (opcao) {
+                            case 10:
+                                criarPedido(usuario);
+                                break;
                             case 13:
                                 break;
                             case 14:
@@ -95,6 +98,9 @@ public class App {
                     System.out.print("Digite a opção desejada: ");
                     opcao = entrada.nextInt();
                     switch (opcao) {
+                        case 1:
+                            criarPedido(usuario);
+                            break;
                         case 4:
                             break;
                         case 5:
@@ -115,6 +121,47 @@ public class App {
             System.out.println("[" + i + "]: " + usuarios.get(i).getNome() + " | " + usuarios.get(i).getDepartamento().getNome());
         }
         System.out.println();
+    }
+
+    public void criarPedido(Usuario usuario) {
+        System.out.println("Quantos itens deseja cadastrar no pedido: ");
+        int quantidade = entrada.nextInt();
+
+        ArrayList<Item> listaItens = new ArrayList<>();
+
+        for (int i = 0; i < quantidade; i++) {
+            System.out.println("Informe o valor do item [" + (i + 1) + "]: ");
+            double valor = entrada.nextDouble();
+
+            entrada.nextLine();
+
+            System.out.println("Informe o nome do item [" + (i + 1) + "]: ");
+            String nome = entrada.nextLine();
+
+            listaItens.add(new Item(nome, valor));
+        }
+
+        double checkpreco = 0;
+
+        for (Item item : listaItens) {
+            checkpreco += item.getPreco();
+        }
+
+        if (checkpreco > usuario.getDepartamento().valorMaximo) {
+            System.out.println("Limite excedido do departamento (" + usuario.getDepartamento().getValorMaximo() + ").");
+        } else {
+            System.out.println("Informe a descrição do pedido: ");
+            String desc = entrada.nextLine();
+
+            empresa.cadastrarPedido(new Pedido(usuario.getDepartamento(), usuario, listaItens, desc));
+            mostrarTodosPedidos();
+        }
+    }
+
+    public void mostrarTodosPedidos() {
+        for (Pedido pedido : empresa.getTodosPedidos()) {
+            System.out.println(pedido);
+        }
     }
 
     public void menuFuncionario() {
