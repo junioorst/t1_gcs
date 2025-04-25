@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class Pedido {
 
     enum Status {
-        EM_ANALISE, APROVADO, REJEITADO
+        EM_ANALISE, APROVADO, REJEITADO, CONCLUIDO
     }
 
     private Status status;
@@ -28,6 +28,22 @@ public class Pedido {
         this.descricao = descricao;
     }
 
+    public Usuario getFunc() {
+        return func;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public LocalDate getData() {
+        return data;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     private double getPrecoTotal() {
         double total = 0;
         for (Item item : listaItens) {
@@ -36,17 +52,20 @@ public class Pedido {
         return total;
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
-        return "Pedido{" +
-                "status=" + status +
-                ", id=" + id +
-                ", listaItens=" + listaItens +
-                ", data=" + data +
-                ", valor=" + valor +
-                ", depto=" + depto +
-                ", func=" + func +
-                ", descricao='" + descricao + '\'' +
-                '}';
+        return "Pedido:" +
+                "\nStatus = " + status +
+                "\nID = " + id +
+                "\nLista de Itens = " + listaItens +
+                "\nData = " + data +
+                "\nValor = R$" + valor +
+                "\n" + depto +
+                "\n" + func +
+                "\nDescrição = '" + descricao + '\'';
     }
 }
