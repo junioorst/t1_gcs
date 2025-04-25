@@ -1,4 +1,8 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -49,7 +53,9 @@ public class App {
         inicializar();
         System.out.println("Bem-vindo a TechSolutions Ltda!");
 
+
         int opcao = 0;
+
         do {
             listaUsuarios();
             int opcaoFuncionario;
@@ -75,9 +81,23 @@ public class App {
                         System.out.print("Digite a opção desejada: ");
                         opcao = entrada.nextInt();
                         switch (opcao) {
+                            case 0:
+                                avaliarPedido();
+                                break;
+                            case 1:
+                                concluirPedido();
+                                break;
+                            case 2:
+                                visualizarPorData();
+                                break;
                             case 10:
                                 criarPedido(usuario);
                                 break;
+                            case 11:
+                                excluirPedido(usuario);
+                                break;
+                            case 12:
+
                             case 13:
                                 break;
                             case 14:
@@ -86,7 +106,7 @@ public class App {
                                 System.out.println("Opcão inválida. Redigite.");
                         }
                     }
-                    while (opcao != 14 && opcao != 13);
+                    while (opcao != 12 && opcao != 13);
 
                 } else {
                     System.out.println("Senha incorreta. Redigite.");
@@ -101,17 +121,20 @@ public class App {
                         case 1:
                             criarPedido(usuario);
                             break;
-                        case 4:
+                        case 2:
+                            excluirPedido(usuario);
                             break;
-                        case 5:
+                        case 3:
+                            break;
+                        case 4:
                             break;
                         default:
                             System.out.println("Opcão inválida. Redigite.");
                     }
                 }
-                while (opcao != 5 && opcao != 4);
+                while (opcao != 4 && opcao != 3);
             }
-        } while (opcao == 13 || opcao == 4);
+        } while (opcao == 12 || opcao == 3);
     }
 
     public void listaUsuarios() {
@@ -161,21 +184,200 @@ public class App {
     public void mostrarTodosPedidos() {
         for (Pedido pedido : empresa.getTodosPedidos()) {
             System.out.println(pedido);
+            System.out.println("-=".repeat(15));
         }
+    }
+
+    /*Método excluirPedido:
+    * recebe o usuário corrente que está usando o sistema
+    * mostra todos os pedidos que:
+    * 1 - Estivem com status "EM_ANALISE"
+    * 2 - Tiverem sido feitos pelo usuário corrente
+    * Solicita o ID do pedido que deseja excluir
+    * Chama o método verificarPedido que busca um pedido com aquele ID
+    * Se existir esse pedido, ele estiver em aberto e tiver sido feito
+    * pelo usuário, então retorna o pedido e o pedido é removido.
+    */
+    public void excluirPedido(Usuario usuario) {
+        for (Pedido pedido : empresa.getTodosPedidos()) {
+            if (pedido.getFunc().equals(usuario) && pedido.getStatus().equals(Pedido.Status.EM_ANALISE)) {
+                System.out.println(pedido);
+                System.out.println("-=".repeat(20));
+            }
+        }
+        System.out.println("Informe o id do pedido que deseja excluir: ");
+        int id = entrada.nextInt();
+
+        Pedido checkedPedido = verificarPedido(usuario, id);
+        if(checkedPedido != null){
+            empresa.getTodosPedidos().remove(checkedPedido);
+            System.out.println("Pedido removido com sucesso");
+        } else {
+            System.out.println("O pedido deve: " +
+                    "\n1 - Ter sido feito pelo seu usuário;" +
+                    "\n2 - Ainda estar em aberto/em análise." +
+                    "\nTente novamente.");
+        }
+    }
+
+    private Pedido verificarPedido(Usuario usuario, int id){
+        Pedido checkedPedido = buscarPedidoPorId(id);
+        if(checkedPedido != null && checkedPedido.getFunc().equals(usuario)
+                && checkedPedido.getStatus().equals(Pedido.Status.EM_ANALISE)) {
+            return checkedPedido;
+        }
+        return null;
+    }
+
+    /*Método avaliarPedido:
+    */
+    public void avaliarPedido() {
+        for (Pedido pedido : empresa.getTodosPedidos()) {
+            if (pedido.getStatus().equals(Pedido.Status.EM_ANALISE)) {
+                System.out.println(pedido);
+                System.out.println("-=".repeat(20));
+            }
+        }
+
+        System.out.println("Informe o ID do pedido que deseja avaliar");
+        Pedido pedidoAvaliado = buscarPedidoPorId(entrada.nextInt());
+
+        if(pedidoAvaliado != null) {
+            System.out.println("Avaliar Pedido: " +
+                        "\nAperte 1 para APROVAR; " + 
+                        "\nAperte 2 para REJEITAR.");
+            int escolha = entrada.nextInt();
+
+            System.out.println("Confirme a avaliação repetindo (1 para APROVAR, 2 para REJEITAR)");
+            int confirmacao = entrada.nextInt();
+
+            if(escolha == confirmacao) {
+                switch (escolha){
+                    case 1:
+                        pedidoAvaliado.setStatus(Pedido.Status.APROVADO);
+                        break;
+                    case 2:
+                        pedidoAvaliado.setStatus(Pedido.Status.REJEITADO);
+                        break;
+                    default:
+                        System.out.println("Escolha inválida");
+                        break;
+                }
+            } else {
+                System.out.println("Os comandos não batem! Tente novamente.");
+            }
+        } else {
+            System.out.println("Pedido não encontrado");
+        }
+    }
+
+    public void concluirPedido() {
+        for (Pedido pedido : empresa.getTodosPedidos()) {
+            if (pedido.getStatus().equals(Pedido.Status.APROVADO) || pedido.getStatus().equals(Pedido.Status.REJEITADO)) {
+                System.out.println(pedido);
+                System.out.println("-=".repeat(20));
+            }
+        }
+
+        System.out.println("Informe o ID do pedido que deseja concluir");
+        Pedido pedidoConcluido = buscarPedidoPorId(entrada.nextInt());
+
+        if(pedidoConcluido != null) {
+            System.out.println("Concluir Pedido: " +
+                    "\nAperte 1 para CONCLUIR.");
+            int escolha = entrada.nextInt();
+
+            System.out.println("Confirme a conclusão repetindo 1 para CONCLUIR ou 2 para cancelar");
+            int confirmacao = entrada.nextInt();
+
+            if(escolha == confirmacao) {
+                pedidoConcluido.setStatus(Pedido.Status.CONCLUIDO);
+            } else {
+                System.out.println("Comando inválido! Tente novamente.");
+            }
+        } else {
+            System.out.println("Pedido não encontrado");
+        }
+    }
+
+    public void visualizarPorData() {
+        List<Pedido> pedidos = empresa.getTodosPedidos();
+
+        System.out.println("Informe o intervalo de datas no formato dd/mm/aaaa\n");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        LocalDate data1 = null;
+
+        while (data1 == null) {
+            try {
+                System.out.print("\nPrimeira data: ");
+                String input1 = entrada.nextLine().trim();
+
+                if (input1.isEmpty()) {
+                    throw new DateTimeParseException("Data vazia", input1, 0);
+                }
+                data1 = LocalDate.parse(input1, formatter);
+            } catch (DateTimeParseException e) {
+                System.out.println("Data inválida! Formato correto: dd/mm/aaaa");
+            }
+        }
+
+        LocalDate data2 = null;
+        while (data2 == null) {
+            try {
+                System.out.print("\nSegunda data: ");
+
+                String input2 = entrada.nextLine().trim();
+                if (input2.isEmpty()) {
+                    throw new DateTimeParseException("Data vazia", input2, 0);
+                }
+                data2 = LocalDate.parse(input2, formatter);
+
+                if (data2.isBefore(data1)) {
+                    System.out.println("A segunda data deve ser posterior ou igual à primeira!");
+                    data2 = null;
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("Data inválida! Formato correto: dd/mm/aaaa");
+            }
+        }
+
+        if (pedidos.isEmpty()){
+            System.out.println("Não há pedidos cadastrados nesse período");
+        } else {
+            for (Pedido pedido : pedidos) {
+                boolean maiorOuIgual = pedido.getData().isAfter(data1) || pedido.getData().isEqual(data1);
+                boolean menorOuIgual = pedido.getData().isBefore(data2) || pedido.getData().isEqual(data2);
+                if (maiorOuIgual && menorOuIgual) {
+                    System.out.println(pedido);
+                    System.out.println("-".repeat(10) + "\n");
+                }
+            }
+        }
+    }
+
+    private Pedido buscarPedidoPorId(int id) {
+        for (Pedido pedido : empresa.getTodosPedidos()) {
+            if (pedido.getId() == id) {
+                return pedido;
+            }
+        }
+        return null;
     }
 
     public void menuFuncionario() {
         System.out.println("\n==== PERMISSÕES GERAIS ====");
         System.out.println("[1] Registrar novo pedido de aquisição");
         System.out.println("[2] Excluir pedido");
-        System.out.println("[3] Reabrir pedido");
-        System.out.println("[4] Trocar usuário");
-        System.out.println("[5] Sair\n");
+        System.out.println("[3] Trocar usuário");
+        System.out.println("[4] Sair\n");
     }
 
     public void menuAdmin() {
         System.out.println("\n==== PERMISSÕES ADMIN ====");
-        System.out.println("[1] Avaliar pedido aberto (aprovar/rejeitar)");
+        System.out.println("[0] Avaliar pedido aberto (aprovar/rejeitar)");
+        System.out.println("[1] Concluir pedido avaliado");
         System.out.println("[2] Listar todos os pedidos entre duas datas");
         System.out.println("[3] Buscar pedidos por funcionário solicitante");
         System.out.println("[4] Buscar pedidos pela descrição de um item");
@@ -188,8 +390,7 @@ public class App {
         System.out.println("\n==== PERMISSÕES GERAIS ====");
         System.out.println("[10] Registrar novo pedido de aquisição");
         System.out.println("[11] Excluir pedido");
-        System.out.println("[12] Reabrir pedido");
-        System.out.println("[13] Trocar usuário");
-        System.out.println("[14] Sair\n");
+        System.out.println("[12] Trocar usuário");
+        System.out.println("[13] Sair\n");
     }
 }
