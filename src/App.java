@@ -101,6 +101,7 @@ public class App {
                             case 13:
                                 break;
                             case 14:
+                                mostrarEstatisticasPedidos();
                                 break;
                             default:
                                 System.out.println("Opcão inválida. Redigite.");
@@ -366,6 +367,92 @@ public class App {
         return null;
     }
 
+
+    public void mostrarEstatisticasPedidos() {
+        ArrayList<Pedido> pedidos = empresa.getTodosPedidos();
+        if (pedidos.isEmpty()) {
+            System.out.println("Nenhum pedido cadastrado.");
+            return;
+        }
+
+        int totalPedidos = pedidos.size();
+        int emAnalise = 0, aprovados = 0, rejeitados = 0, concluidos = 0;
+
+        for (Pedido pedido : pedidos) {
+            switch (pedido.getStatus()) {
+                case EM_ANALISE:
+                    emAnalise++;
+                    break;
+                case APROVADO:
+                    aprovados++;
+                    break;
+                case REJEITADO:
+                    rejeitados++;
+                    break;
+                case CONCLUIDO:
+                    concluidos++;
+                    break;
+            }
+        }
+
+        System.out.println("\n==== ESTATÍSTICAS DE PEDIDOS ====");
+        System.out.println("Total de pedidos: " + totalPedidos);
+        System.out.println("Em análise: " + emAnalise + " (" + (emAnalise * 100 / totalPedidos) +
+                "%");
+        System.out.println("Aprovados: " + aprovados + " (" + (aprovados * 100 / totalPedidos) +
+                "%");
+        System.out.println("Rejeitados: " + rejeitados + " (" + (rejeitados * 100 / totalPedidos) +
+                "%");
+        System.out.println("Concluídos: " + concluidos + " (" + (concluidos * 100 / totalPedidos) +
+                "%");
+    }
+
+
+    public void avaliarPedido() {
+        for (Pedido pedido : empresa.getTodosPedidos()) {
+            if (pedido.getStatus().equals(Pedido.Status.EM_ANALISE)) {
+                System.out.println(pedido);
+                System.out.println("-=".repeat(20));
+            }
+        }
+
+        System.out.println("Informe o ID do pedido que deseja avaliar");
+        Pedido pedidoAvaliado = buscarPedidoPorId(entrada.nextInt());
+
+        if (pedidoAvaliado != null) {
+            if (!pedidoAvaliado.getStatus().equals(Pedido.Status.EM_ANALISE)) {
+                System.out.println("Esse pedido já foi avaliado e não pode ser reaberto!");
+                return;
+            }
+
+            System.out.println("Avaliar Pedido: " +
+                    "\nAperte 1 para APROVAR; " +
+                    "\nAperte 2 para REJEITAR.");
+            int escolha = entrada.nextInt();
+
+            System.out.println("Confirme a avaliação repetindo (1 para APROVAR, 2 para REJEITAR)");
+            int confirmacao = entrada.nextInt();
+
+            if (escolha == confirmacao) {
+                switch (escolha) {
+                    case 1:
+                        pedidoAvaliado.setStatus(Pedido.Status.APROVADO);
+                        break;
+                    case 2:
+                        pedidoAvaliado.setStatus(Pedido.Status.REJEITADO);
+                        break;
+                    default:
+                        System.out.println("Escolha inválida");
+                        break;
+                }
+            } else {
+                System.out.println("Os comandos não batem! Tente novamente.");
+            }
+        } else {
+            System.out.println("Pedido não encontrado.");
+        }
+    }
+
     public void menuFuncionario() {
         System.out.println("\n==== PERMISSÕES GERAIS ====");
         System.out.println("[1] Registrar novo pedido de aquisição");
@@ -386,6 +473,7 @@ public class App {
         System.out.println("[7] Número de pedidos dos últimos 30 dias e valor médio");
         System.out.println("[8] Valor total de cada categoria nos últimos 30 dias");
         System.out.println("[9] Pedido de maior valor ainda aberto");
+        System.out.println("[14] Estatísticas de pedidos (totais e percentuais)");
 
         System.out.println("\n==== PERMISSÕES GERAIS ====");
         System.out.println("[10] Registrar novo pedido de aquisição");
