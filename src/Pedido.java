@@ -18,7 +18,7 @@ public class Pedido {
     private String descricao;
 
     public Pedido(Departamento depto, Usuario func, ArrayList<Item> listaItens, String descricao) {
-        this.listaItens = listaItens;
+        this.setListaItens(listaItens);
         this.id = ++LAST_ID;
         this.data = LocalDate.now();
         this.valor = getPrecoTotal();
@@ -26,6 +26,16 @@ public class Pedido {
         this.func = func;
         this.status = Status.EM_ANALISE;
         this.descricao = descricao;
+    }
+
+    public ArrayList<Item> getListaItens() {
+        return listaItens;
+        
+    }
+
+    public void setListaItens(ArrayList<Item> listaItens) {
+        this.listaItens = listaItens;
+        
     }
 
     public Usuario getFunc() {
@@ -44,12 +54,20 @@ public class Pedido {
         return id;
     }
 
-    private double getPrecoTotal() {
+    public double getPrecoTotal() {
         double total = 0;
-        for (Item item : listaItens) {
+        for (Item item : getListaItens()) {
             total += item.getPreco();
         }
         return total;
+    }
+
+    public Departamento getDepto() {
+        return depto;
+    }
+
+    public String getDescricao() {
+        return descricao;
     }
 
     public void setStatus(Status status) {
@@ -61,7 +79,7 @@ public class Pedido {
         return "Pedido:" +
                 "\nStatus = " + status +
                 "\nID = " + id +
-                "\nLista de Itens = " + listaItens +
+                "\nLista de Itens = " + getListaItens() +
                 "\nData = " + data +
                 "\nValor = R$" + valor +
                 "\n" + depto +

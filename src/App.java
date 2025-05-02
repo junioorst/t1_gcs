@@ -90,6 +90,20 @@ public class App {
                             case 2:
                                 visualizarPorData();
                                 break;
+                            case 3:
+                                buscarPedidosPorFuncionario();
+                                break;
+                            case 4:
+                                buscarPedidosPorDescricaoItem();
+                                break;
+                            case 5:
+                                visualizarDetalhesPedido();
+                                break;
+                            case 7:
+                                numeroPedidosUltimos30DiasEValorMedio();
+                                break;
+                            case 8:
+                                detalhesMaiorValorAberto();
                             case 10:
                                 criarPedido(usuario);
                                 break;
@@ -367,6 +381,149 @@ public class App {
         return null;
     }
 
+    public void numeroPedidosUltimos30DiasEValorMedio() {
+        List<Pedido> pedidos = empresa.getTodosPedidos();
+        LocalDate hoje = LocalDate.now();
+        LocalDate dataLimite = hoje.minusDays(30);
+
+        int total = 0;
+        double somaValores = 0.0;
+
+        for (Pedido p : pedidos) {
+            LocalDate dataPedido = p.getData();
+            if ((dataPedido.isAfter(dataLimite) || dataPedido.isEqual(dataLimite)) &&
+                    (dataPedido.isBefore(hoje)     || dataPedido.isEqual(hoje))) {
+                total++;
+                somaValores += p.getPrecoTotal();
+            }
+        }
+        if (total > 0) {
+            double media = somaValores / total;
+            System.out.println("Número de pedidos nos últimos 30 dias: " + total);
+            System.out.printf("Valor médio dos pedidos: %.2f%n", media);
+        } else {
+            System.out.println("Não há pedidos nos últimos 30 dias.");
+        }
+    }
+
+        public void detalhesMaiorValorAberto() {
+            List<Pedido> pedidos = empresa.getTodosPedidos();
+            Pedido maior = null;
+
+            for (Pedido p : pedidos) {
+                if (p.getStatus() == Pedido.Status.EM_ANALISE) {
+                    if (maior == null || p.getPrecoTotal() > maior.getPrecoTotal()) {
+                        maior = p;
+                    }
+                }
+            }
+
+            if (maior != null) {
+                System.out.println("=== Detalhes do Pedido de Maior Valor ===");
+                System.out.println("ID:            " + maior.getId());
+                System.out.println("Departamento:  " + maior.getDepto().getNome());
+                System.out.println("Solicitante:   " + maior.getFunc().getNome());
+                System.out.printf  ("Valor total:   %.2f%n", maior.getPrecoTotal());
+                System.out.println("Descrição:     " + maior.getDescricao());
+                System.out.println("Data:          " + maior.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                System.out.println("Status:        " + maior.getStatus());
+            } else {
+                System.out.println("Não há pedidos em análise no momento.");
+            }
+        }
+
+
+>>>>>>> 7d11d7d59539dccd1145e5dd2df603be7f06eecc
+    public void menuFuncionario() {
+        System.out.println("\n==== PERMISSÕES GERAIS ====");
+        System.out.println("[1] Registrar novo pedido de aquisição");
+        System.out.println("[2] Excluir pedido");
+        System.out.println("[3] Trocar usuário");
+        System.out.println("[4] Sair\n");
+    }
+
+    public void menuAdmin() {
+        System.out.println("\n==== PERMISSÕES ADMIN ====");
+        System.out.println("[0] Avaliar pedido aberto (aprovar/rejeitar)");
+        System.out.println("[1] Concluir pedido avaliado");
+        System.out.println("[2] Listar todos os pedidos entre duas datas");
+        System.out.println("[3] Buscar pedidos por funcionário solicitante");
+        System.out.println("[4] Buscar pedidos pela descrição de um item");
+        System.out.println("[5] Visualizar detalhes de um pedido");
+        System.out.println("[6] Número total de pedidos (aprovados/reprovados)");
+        System.out.println("[7] Número de pedidos dos últimos 30 dias e valor médio");
+        System.out.println("[8] Detalhes do pedido de maior valor aberto");
+        System.out.println("[9] Pedido de maior valor ainda aberto");
+        System.out.println("[14] Estatísticas de pedidos (totais e percentuais)");
+
+        System.out.println("\n==== PERMISSÕES GERAIS ====");
+        System.out.println("[10] Registrar novo pedido de aquisição");
+        System.out.println("[11] Excluir pedido");
+        System.out.println("[12] Trocar usuário");
+        System.out.println("[13] Sair\n");
+    }
+    public void buscarPedidosPorFuncionario() {
+        entrada.nextLine(); // <-- limpa o buffer
+        System.out.print("Digite o nome do funcionário: ");
+        String nomeFuncionario = entrada.nextLine().toLowerCase();
+    
+        boolean encontrado = false;
+        for (Pedido pedido : empresa.getTodosPedidos()) {
+            if (pedido.getFunc().getNome().toLowerCase().contains(nomeFuncionario)) {
+                System.out.println(pedido);
+                System.out.println("_".repeat(20));
+                encontrado = true;
+            }
+        }
+    
+        if (!encontrado) {
+            System.out.println("Nenhum pedido encontrado para este funcionário.");
+        }
+    }
+    
+    public void buscarPedidosPorDescricaoItem() {
+        entrada.nextLine(); // <-- limpa o buffer
+        System.out.print("Digite a descrição do item: ");
+        String descricaoItem = entrada.nextLine().toLowerCase();
+    
+        boolean encontrado = false;
+        for (Pedido pedido : empresa.getTodosPedidos()) {
+            for (Item item : pedido.getListaItens()) {
+                if (item.getNome().toLowerCase().contains(descricaoItem)) {
+                    System.out.println(pedido);
+                    System.out.println("_".repeat(20));
+                    encontrado = true;
+                    break;
+                }
+            }
+        }
+    
+        if (!encontrado) {
+            System.out.println("Nenhum pedido encontrado com esse item.");
+        }
+    }
+    
+    public void visualizarDetalhesPedido() {
+        System.out.print("Digite o ID do pedido para visualizar detalhes: ");
+    
+        if (!entrada.hasNextInt()) {
+            System.out.println("Entrada inválida. Digite um número inteiro.");
+            entrada.next(); // descarta a entrada inválida
+            return;
+        }
+    
+        int id = entrada.nextInt();
+        entrada.nextLine(); // limpa buffer
+    
+        Pedido pedido = buscarPedidoPorId(id);
+        if (pedido != null) {
+            System.out.println(pedido);
+            System.out.println("_".repeat(20));
+        } else {
+            System.out.println("Pedido não encontrado!");
+        }
+    }
+
 
     public void mostrarEstatisticasPedidos() {
         ArrayList<Pedido> pedidos = empresa.getTodosPedidos();
@@ -451,34 +608,5 @@ public class App {
         } else {
             System.out.println("Pedido não encontrado.");
         }
-    }
-
-    public void menuFuncionario() {
-        System.out.println("\n==== PERMISSÕES GERAIS ====");
-        System.out.println("[1] Registrar novo pedido de aquisição");
-        System.out.println("[2] Excluir pedido");
-        System.out.println("[3] Trocar usuário");
-        System.out.println("[4] Sair\n");
-    }
-
-    public void menuAdmin() {
-        System.out.println("\n==== PERMISSÕES ADMIN ====");
-        System.out.println("[0] Avaliar pedido aberto (aprovar/rejeitar)");
-        System.out.println("[1] Concluir pedido avaliado");
-        System.out.println("[2] Listar todos os pedidos entre duas datas");
-        System.out.println("[3] Buscar pedidos por funcionário solicitante");
-        System.out.println("[4] Buscar pedidos pela descrição de um item");
-        System.out.println("[5] Visualizar detalhes de um pedido");
-        System.out.println("[6] Número total de pedidos (aprovados/reprovados)");
-        System.out.println("[7] Número de pedidos dos últimos 30 dias e valor médio");
-        System.out.println("[8] Valor total de cada categoria nos últimos 30 dias");
-        System.out.println("[9] Pedido de maior valor ainda aberto");
-        System.out.println("[14] Estatísticas de pedidos (totais e percentuais)");
-
-        System.out.println("\n==== PERMISSÕES GERAIS ====");
-        System.out.println("[10] Registrar novo pedido de aquisição");
-        System.out.println("[11] Excluir pedido");
-        System.out.println("[12] Trocar usuário");
-        System.out.println("[13] Sair\n");
     }
 }
