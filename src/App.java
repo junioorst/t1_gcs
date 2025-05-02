@@ -90,6 +90,15 @@ public class App {
                             case 2:
                                 visualizarPorData();
                                 break;
+                            case 3:
+                                buscarPedidosPorFuncionario();
+                                break;
+                            case 4:
+                                buscarPedidosPorDescricaoItem();
+                                break;
+                            case 5:
+                                visualizarDetalhesPedido();
+                                break;
                             case 10:
                                 criarPedido(usuario);
                                 break;
@@ -393,4 +402,66 @@ public class App {
         System.out.println("[12] Trocar usuário");
         System.out.println("[13] Sair\n");
     }
+    public void buscarPedidosPorFuncionario() {
+        entrada.nextLine(); // <-- limpa o buffer
+        System.out.print("Digite o nome do funcionário: ");
+        String nomeFuncionario = entrada.nextLine().toLowerCase();
+    
+        boolean encontrado = false;
+        for (Pedido pedido : empresa.getTodosPedidos()) {
+            if (pedido.getFunc().getNome().toLowerCase().contains(nomeFuncionario)) {
+                System.out.println(pedido);
+                System.out.println("_".repeat(20));
+                encontrado = true;
+            }
+        }
+    
+        if (!encontrado) {
+            System.out.println("Nenhum pedido encontrado para este funcionário.");
+        }
+    }
+    
+    public void buscarPedidosPorDescricaoItem() {
+        entrada.nextLine(); // <-- limpa o buffer
+        System.out.print("Digite a descrição do item: ");
+        String descricaoItem = entrada.nextLine().toLowerCase();
+    
+        boolean encontrado = false;
+        for (Pedido pedido : empresa.getTodosPedidos()) {
+            for (Item item : pedido.getListaItens()) {
+                if (item.getNome().toLowerCase().contains(descricaoItem)) {
+                    System.out.println(pedido);
+                    System.out.println("_".repeat(20));
+                    encontrado = true;
+                    break;
+                }
+            }
+        }
+    
+        if (!encontrado) {
+            System.out.println("Nenhum pedido encontrado com esse item.");
+        }
+    }
+    
+    public void visualizarDetalhesPedido() {
+        System.out.print("Digite o ID do pedido para visualizar detalhes: ");
+    
+        if (!entrada.hasNextInt()) {
+            System.out.println("Entrada inválida. Digite um número inteiro.");
+            entrada.next(); // descarta a entrada inválida
+            return;
+        }
+    
+        int id = entrada.nextInt();
+        entrada.nextLine(); // limpa buffer
+    
+        Pedido pedido = buscarPedidoPorId(id);
+        if (pedido != null) {
+            System.out.println(pedido);
+            System.out.println("_".repeat(20));
+        } else {
+            System.out.println("Pedido não encontrado!");
+        }
+    }
+        
 }
