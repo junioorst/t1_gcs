@@ -90,9 +90,11 @@ public class App {
                             case 2:
                                 visualizarPorData();
                                 break;
-                            case 8:
+                            case 7:
                                 numeroPedidosUltimos30DiasEValorMedio();
                                 break;
+                            case 8:
+                                detalhesMaiorValorAberto();
                             case 10:
                                 criarPedido(usuario);
                                 break;
@@ -385,7 +387,6 @@ public class App {
                 somaValores += p.getPrecoTotal();
             }
         }
-
         if (total > 0) {
             double media = somaValores / total;
             System.out.println("Número de pedidos nos últimos 30 dias: " + total);
@@ -394,6 +395,33 @@ public class App {
             System.out.println("Não há pedidos nos últimos 30 dias.");
         }
     }
+
+        public void detalhesMaiorValorAberto() {
+            List<Pedido> pedidos = empresa.getTodosPedidos();
+            Pedido maior = null;
+
+            for (Pedido p : pedidos) {
+                if (p.getStatus() == Pedido.Status.EM_ANALISE) {
+                    if (maior == null || p.getPrecoTotal() > maior.getPrecoTotal()) {
+                        maior = p;
+                    }
+                }
+            }
+
+            if (maior != null) {
+                System.out.println("=== Detalhes do Pedido de Maior Valor ===");
+                System.out.println("ID:            " + maior.getId());
+                System.out.println("Departamento:  " + maior.getDepto().getNome());
+                System.out.println("Solicitante:   " + maior.getFunc().getNome());
+                System.out.printf  ("Valor total:   %.2f%n", maior.getPrecoTotal());
+                System.out.println("Descrição:     " + maior.getDescricao());
+                System.out.println("Data:          " + maior.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                System.out.println("Status:        " + maior.getStatus());
+            } else {
+                System.out.println("Não há pedidos em análise no momento.");
+            }
+        }
+
 
     public void menuFuncionario() {
         System.out.println("\n==== PERMISSÕES GERAIS ====");
@@ -413,7 +441,7 @@ public class App {
         System.out.println("[5] Visualizar detalhes de um pedido");
         System.out.println("[6] Número total de pedidos (aprovados/reprovados)");
         System.out.println("[7] Número de pedidos dos últimos 30 dias e valor médio");
-        System.out.println("[8] Valor total de cada categoria nos últimos 30 dias");
+        System.out.println("[8] Detalhes do pedido de maior valor aberto");
         System.out.println("[9] Pedido de maior valor ainda aberto");
 
         System.out.println("\n==== PERMISSÕES GERAIS ====");
