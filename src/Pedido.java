@@ -52,6 +52,14 @@ public class Pedido {
         return total;
     }
 
+    public Departamento getDepto() {
+        return depto;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
     }
