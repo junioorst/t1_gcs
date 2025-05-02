@@ -432,8 +432,6 @@ public class App {
             }
         }
 
-
->>>>>>> 7d11d7d59539dccd1145e5dd2df603be7f06eecc
     public void menuFuncionario() {
         System.out.println("\n==== PERMISSÕES GERAIS ====");
         System.out.println("[1] Registrar novo pedido de aquisição");
@@ -562,51 +560,5 @@ public class App {
                 "%");
         System.out.println("Concluídos: " + concluidos + " (" + (concluidos * 100 / totalPedidos) +
                 "%");
-    }
-
-
-    public void avaliarPedido() {
-        for (Pedido pedido : empresa.getTodosPedidos()) {
-            if (pedido.getStatus().equals(Pedido.Status.EM_ANALISE)) {
-                System.out.println(pedido);
-                System.out.println("-=".repeat(20));
-            }
-        }
-
-        System.out.println("Informe o ID do pedido que deseja avaliar");
-        Pedido pedidoAvaliado = buscarPedidoPorId(entrada.nextInt());
-
-        if (pedidoAvaliado != null) {
-            if (!pedidoAvaliado.getStatus().equals(Pedido.Status.EM_ANALISE)) {
-                System.out.println("Esse pedido já foi avaliado e não pode ser reaberto!");
-                return;
-            }
-
-            System.out.println("Avaliar Pedido: " +
-                    "\nAperte 1 para APROVAR; " +
-                    "\nAperte 2 para REJEITAR.");
-            int escolha = entrada.nextInt();
-
-            System.out.println("Confirme a avaliação repetindo (1 para APROVAR, 2 para REJEITAR)");
-            int confirmacao = entrada.nextInt();
-
-            if (escolha == confirmacao) {
-                switch (escolha) {
-                    case 1:
-                        pedidoAvaliado.setStatus(Pedido.Status.APROVADO);
-                        break;
-                    case 2:
-                        pedidoAvaliado.setStatus(Pedido.Status.REJEITADO);
-                        break;
-                    default:
-                        System.out.println("Escolha inválida");
-                        break;
-                }
-            } else {
-                System.out.println("Os comandos não batem! Tente novamente.");
-            }
-        } else {
-            System.out.println("Pedido não encontrado.");
-        }
-    }
+    }       
 }
