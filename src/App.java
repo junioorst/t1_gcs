@@ -90,6 +90,9 @@ public class App {
                             case 2:
                                 visualizarPorData();
                                 break;
+                            case 8:
+                                numeroPedidosUltimos30DiasEValorMedio();
+                                break;
                             case 10:
                                 criarPedido(usuario);
                                 break;
@@ -364,6 +367,32 @@ public class App {
             }
         }
         return null;
+    }
+
+    public void numeroPedidosUltimos30DiasEValorMedio() {
+        List<Pedido> pedidos = empresa.getTodosPedidos();
+        LocalDate hoje = LocalDate.now();
+        LocalDate dataLimite = hoje.minusDays(30);
+
+        int total = 0;
+        double somaValores = 0.0;
+
+        for (Pedido p : pedidos) {
+            LocalDate dataPedido = p.getData();
+            if ((dataPedido.isAfter(dataLimite) || dataPedido.isEqual(dataLimite)) &&
+                    (dataPedido.isBefore(hoje)     || dataPedido.isEqual(hoje))) {
+                total++;
+                somaValores += p.getPrecoTotal();
+            }
+        }
+
+        if (total > 0) {
+            double media = somaValores / total;
+            System.out.println("Número de pedidos nos últimos 30 dias: " + total);
+            System.out.printf("Valor médio dos pedidos: %.2f%n", media);
+        } else {
+            System.out.println("Não há pedidos nos últimos 30 dias.");
+        }
     }
 
     public void menuFuncionario() {

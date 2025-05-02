@@ -44,7 +44,7 @@ public class Pedido {
         return id;
     }
 
-    private double getPrecoTotal() {
+    public double getPrecoTotal() {
         double total = 0;
         for (Item item : listaItens) {
             total += item.getPreco();
