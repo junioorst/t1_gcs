@@ -54,12 +54,20 @@ public class Pedido {
         return id;
     }
 
-    private double getPrecoTotal() {
+    public double getPrecoTotal() {
         double total = 0;
         for (Item item : getListaItens()) {
             total += item.getPreco();
         }
         return total;
+    }
+
+    public Departamento getDepto() {
+        return depto;
+    }
+
+    public String getDescricao() {
+        return descricao;
     }
 
     public void setStatus(Status status) {
